@@ -11,7 +11,7 @@
 <body>
 	<!-- wrap -->
 	<div id="wrap">
-		<h4>EOSHUB!!!</h4>
+		<h4>EOSHUB Server running</h4>
 	</div>
 	<!-- //wrap -->
 </body>
