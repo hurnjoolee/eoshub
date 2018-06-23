@@ -12,20 +12,22 @@
 		<association property="icon" javaType="io.eoshub.model.File">
 			<result property="id" column="file_id"/>
 			<result property="name" column="file_name"/>
-			<result property="type" column="file_type"/>
 			<result property="size" column="file_size"/>
+			<result property="contentType" column="file_content_type"/>
 		</association>
 		
 	</resultMap>
 	
 	<insert id="insertAdAirdrop" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO ad_airdrop (
+			<if test="icon != null">icon_id,</if>
 			title,
 			expire_date,
 			coin_name,
 			coin_symbol,
-			coin_desc
+			coin_desc			
 		) VALUES (
+			<if test="icon != null">#{icon.id},</if>
 			#{title},
 			#{expireDate},
 			#{coinName},
@@ -44,8 +46,8 @@
 			aa.coin_desc,
 			f.id as file_id,
 			f.name as file_name,
-			f.type as file_type,
-			f.size as file_size
+			f.size as file_size,
+			f.content_type as file_content_type
 		FROM ad_airdrop AS aa
 		LEFT OUTER JOIN file AS f ON f.id = aa.icon_id
 		WHERE

@@ -2,12 +2,16 @@ package io.eoshub.model;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import io.eoshub.type.FileCategoryType;
+
 public class File {
 
 	private Integer id;
 	private String name;
-	private String type;
+	private String contentType;
 	private Long size;
+	private FileCategoryType categoryType;
+	private String downloadUrl;
 
 	private MultipartFile uploadFile;
 
@@ -27,12 +31,12 @@ public class File {
 		this.name = name;
 	}
 
-	public String getType() {
-		return type;
+	public String getContentType() {
+		return contentType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	public Long getSize() {
@@ -50,4 +54,21 @@ public class File {
 	public void setUploadFile(MultipartFile uploadFile) {
 		this.uploadFile = uploadFile;
 	}
+
+	public FileCategoryType getCategoryType() {
+		return categoryType;
+	}
+
+	public void setCategoryType(FileCategoryType categoryType) {
+		this.categoryType = categoryType;
+	}
+
+	public String getDownloadUrl() {
+		return downloadUrl;
+	}
+
+	public void setDownloadUrl(String downloadUrl) {
+		this.downloadUrl = downloadUrl;
+	}
+
 }
