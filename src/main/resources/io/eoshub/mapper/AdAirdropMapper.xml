@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.eoshub.mapper.AdAirdropMapper">
+	<resultMap id="AdAirdropMap" type="io.eoshub.model.AdAirdrop">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="expireDate" column="expire_date"/>
+		<result property="coinName" column="coin_name"/>
+		<result property="coinSymbol" column="coin_symbol"/>
+		<result property="coinDesc" column="coin_desc"/>
+		
+		<association property="icon" javaType="io.eoshub.model.File">
+			<result property="id" column="file_id"/>
+			<result property="name" column="file_name"/>
+			<result property="type" column="file_type"/>
+			<result property="size" column="file_size"/>
+		</association>
+		
+	</resultMap>
+	
+	<insert id="insertAdAirdrop" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO ad_airdrop (
+			title,
+			expire_date,
+			coin_name,
+			coin_symbol,
+			coin_desc
+		) VALUES (
+			#{title},
+			#{expireDate},
+			#{coinName},
+			#{coinSymbol},
+			#{coinDesc}
+		)
+	</insert>
+	
+	<select id="getAdAirdrop" resultMap="AdAirdropMap">
+		SELECT
+			aa.id,
+			aa.title,
+			aa.expire_date,
+			aa.coin_name,
+			aa.coin_symbol,
+			aa.coin_desc,
+			f.id as file_id,
+			f.name as file_name,
+			f.type as file_type,
+			f.size as file_size
+		FROM ad_airdrop AS aa
+		LEFT OUTER JOIN file AS f ON f.id = aa.icon_id
+		WHERE
+			aa.id = #{id}
+	</select>
+
+</mapper>

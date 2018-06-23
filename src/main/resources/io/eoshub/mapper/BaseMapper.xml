@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.eoshub.mapper.BaseMapper">
+	
+	<sql id="commonOrderBy">
+		<if test="sortBy != null and sortOrder != null">ORDER BY ${sortBy} ${sortOrder.code}</if>
+	</sql>
+	
+	<!-- usage sample -->
+	<!-- <include refid="io.eoshub.mapper.BaseMapper.commonOrderByWithAlias"><property name="alias" value="aliasValue"/></include> -->
+	<sql id="commonOrderByWithAlias">
+		<if test="sortBy != null and sortOrder != null">ORDER BY ${alias}.${sortBy} ${sortOrder.code}</if>
+	</sql>
+	
+	<sql id="commonLimit">
+		<if test="offset != null and limit != null and isAllSearch == false">LIMIT #{offset}, #{limit}</if>
+	</sql>
+	
+</mapper>

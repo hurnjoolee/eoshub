@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="io.eoshub">
+        <context:include-filter type="regex" expression=".controller.*Controller"/>
+        <context:include-filter type="regex" expression=".service.*Service"/>
+        <context:include-filter type="regex" expression=".mapper.*Mapper"/>
+    </context:component-scan>
+
+	<bean name="commonObjectMapper" class="io.eoshub.common.CommonObjectMapper"/>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean
+                    class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper" ref="commonObjectMapper"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+    <util:properties id="resourceProperties" location="classpath:properties/resource.properties"/>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <mvc:resources mapping="/resources/**" location="/resources/" />
+    <!-- viewResolver -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!-- cors -->
+    <mvc:cors>
+        <mvc:mapping path="/**" allowed-origins="*"
+                     allowed-methods="GET, POST, PUT, DELETE"
+                     allowed-headers="x-requested-with, origin, content-type, accept, accept-language, accept-encoding, user-agent, host, cache-control, connection, content-length"/>
+    </mvc:cors>
+
+
+    <!-- dataSource, transactionManager, sqlSessionFactory, mapperScanner -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://35.200.71.244:3306/eoshub?useEncoding=true&amp;characterEncoding=UTF-8&amp;useCompression=true" />
+        <property name="username" value="root" />
+        <property name="password" value="Eoshub1029" />
+        <property name="initialSize" value="5"/>
+        <property name="maxActive" value="10"/>
+        <property name="maxIdle" value="5"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="io.eoshub.model"/>
+        <property name="typeHandlersPackage" value="io.eoshub.type.handler"/>
+        <property name="mapperLocations" value="classpath:/io/eoshub/mapper/*.xml"/>
+        <property name="configLocation" value="WEB-INF/context/mybatis-config.xml"/>
+    </bean>
+
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="io.eoshub.mapper"/>
+    </bean>
+
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>
